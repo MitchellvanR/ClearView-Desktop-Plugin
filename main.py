@@ -13,7 +13,7 @@ class MyApp(QApplication):
 
     def listen_for_shortcuts(self):
         """Listen for global hotkeys in a non-blocking way."""
-        keyboard.add_hotkey('alt+j', self.toggle_window)
+        keyboard.add_hotkey('alt+l', self.toggle_window)
 
     def toggle_window(self):
         """Schedule the window toggle in the main thread."""
