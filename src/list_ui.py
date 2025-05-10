@@ -9,25 +9,24 @@ from PyQt5.QtWidgets import (
     QPushButton,
     QScrollArea,
     QVBoxLayout, 
-    QWidget
+    QWidget,
+    QGraphicsDropShadowEffect
 )
 
 class MainWindow(QMainWindow):
     def __init__(self, app):
         super().__init__()
         self.app = app
-        
+
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.configure_window_flags()
         self.setup_window_geometry()
         self.initialize_ui()
 
     def configure_window_flags(self) -> None:
-        """Set window to stay on top, remove window frame and to not appear on the toolbar."""
         self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool)
 
     def setup_window_geometry(self) -> None:
-        """Position the window on the right edge of the screen and set size."""
         screen_geometry = QApplication.primaryScreen().availableGeometry()
         screen_width = screen_geometry.width()
         screen_height = screen_geometry.height()
@@ -41,46 +40,63 @@ class MainWindow(QMainWindow):
         self.setFixedSize(window_width, window_height)
 
     def initialize_ui(self) -> None:
-        """Set up the main UI layout."""
+        # Outer layout with transparent background
+        outer_layout = QVBoxLayout()
+        outer_layout.setContentsMargins(20, 20, 20, 20)
+
+        # Inner container with semi-transparent background and shadow
+        self.panel_container = QWidget()
+        self.panel_container.setObjectName("PanelContainer")
+        self.panel_container.setStyleSheet("""
+            QWidget#PanelContainer {
+                background-color: rgba(40, 40, 40, 200);
+                border-radius: 20px;
+            }
+        """)
+
+        # Drop shadow effect
+        shadow = QGraphicsDropShadowEffect()
+        shadow.setBlurRadius(40)
+        shadow.setXOffset(0)
+        shadow.setYOffset(10)
+        shadow.setColor(QColor(0, 0, 0, 160))
+        self.panel_container.setGraphicsEffect(shadow)
+
+        # Main layout inside the styled container
         layout = QVBoxLayout()
+        layout.setContentsMargins(20, 20, 20, 20)
 
         layout.addWidget(self.setup_ui_logo())
         layout.addLayout(self.setup_header_ui())
         layout.addWidget(self.setup_list_ui())
         layout.addLayout(self.setup_input_ui())
 
-        central_widget = QWidget()
-        central_widget.setLayout(layout)
+        self.panel_container.setLayout(layout)
+        outer_layout.addWidget(self.panel_container)
 
-        self.setCentralWidget(central_widget)
+        wrapper = QWidget()
+        wrapper.setLayout(outer_layout)
+        self.setCentralWidget(wrapper)
 
     def paintEvent(self, event) -> None:
-        """Override paintEvent to apply the semi-transparent background."""
+        # Transparent background
         painter = QPainter(self)
-        painter.setPen(Qt.transparent)
-
-        transparent_black = QColor(253, 241, 218, 50)
-
-        painter.setBrush(transparent_black)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(Qt.transparent)
         painter.drawRect(self.rect())
 
     def setup_ui_logo(self) -> QLabel:
         logo_label = QLabel()
-
         pixmap = QPixmap("assets/logo.png")
         scaled_pixmap = pixmap.scaled(300, 300, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-
         logo_label.setPixmap(scaled_pixmap)
         logo_label.setAlignment(Qt.AlignHCenter)
-        
         logo_label.setMaximumHeight(300)
-        
         return logo_label
 
     def setup_header_ui(self) -> QHBoxLayout:
-        """Set up the header UI layout"""
         header_layout = QHBoxLayout()
-
         clear_button = QPushButton("Clear")
         help_button = QPushButton("?")
         settings_button = QPushButton("⚙")
@@ -91,11 +107,9 @@ class MainWindow(QMainWindow):
         header_layout.addWidget(help_button)
         header_layout.addWidget(settings_button)
         header_layout.addWidget(exit_button)
-
         return header_layout
-    
+
     def setup_list_ui(self) -> QScrollArea:
-        """Set up the list UI layout"""
         self.list_container = QVBoxLayout()
 
         list_widget = QWidget()
@@ -103,7 +117,6 @@ class MainWindow(QMainWindow):
 
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
-
         scroll_area.setWidget(list_widget)
         scroll_area.setFixedHeight(300)
 
@@ -126,4 +139,3 @@ class MainWindow(QMainWindow):
 
     def handle_add_todo(self) -> None:
         pass
-
