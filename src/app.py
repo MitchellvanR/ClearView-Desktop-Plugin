@@ -19,9 +19,9 @@ class MyApp(QApplication):
     def _setup_global_hotkeys(self) -> None:
         """Starts a thread that listens for hotkeys."""
         def hotkey_thread():
-            keyboard.add_hotkey('alt+l', partial(self.handle_hotkey, 'list'))
-            keyboard.add_hotkey('alt+n', partial(self.handle_hotkey, 'notepad'))
-            keyboard.add_hotkey('alt+c', partial(self.handle_hotkey, 'calculator'))
+            keyboard.add_hotkey('alt+l', partial(self._handle_hotkey, 'list'))
+            keyboard.add_hotkey('alt+n', partial(self._handle_hotkey, 'notepad'))
+            keyboard.add_hotkey('alt+c', partial(self._handle_hotkey, 'calculator'))
             keyboard.wait()
 
         threading.Thread(target=hotkey_thread, daemon=True).start()
