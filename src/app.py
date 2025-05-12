@@ -14,7 +14,7 @@ class MyApp(QApplication):
 
     def _handle_hotkey(self, window_type: str) -> None:
         """Fires an event to the main thread to toggle to the correct window according to the hotkey used."""
-        QTimer.singleShot(0, partial(self.toggle_window_status, window_type))
+        QTimer.singleShot(0, partial(self._toggle_window_status, window_type))
 
     def _setup_global_hotkeys(self) -> None:
         """Starts a thread that listens for hotkeys."""
