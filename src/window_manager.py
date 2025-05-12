@@ -5,7 +5,7 @@ class WindowManager:
     def __init__(self, app):
         self.app = app
         self.windows = {}
-        self.initialise_window_classes()
+        self._initialise_window_classes()
 
     def toggle_window_visibility(self, window_key: str) -> None:
         """Toggles the visibility of a window type based on a key."""
