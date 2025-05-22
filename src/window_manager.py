@@ -67,16 +67,18 @@ class WindowManager:
             window.setGeometry(x_pos, y_pos, window_width, window_height)
             window.setFixedSize(window_width, window_height)
 
-        # Show settings and exit buttons only on the right-most window
+        # Show settings, exit buttons, and logo only on the right-most window
         if not self.visible_windows:
             return
 
         right_most_window = self.visible_windows[-1]
         for window in self.visible_windows:
-            if hasattr(window, 'settings_button') and hasattr(window, 'exit_button'):
+            if hasattr(window, 'settings_button') and hasattr(window, 'exit_button') and hasattr(window, 'logo_label'):
                 if window == right_most_window:
                     window.settings_button.show()
                     window.exit_button.show()
+                    window.logo_label.show()
                 else:
                     window.settings_button.hide()
                     window.exit_button.hide()
+                    window.logo_label.hide()
