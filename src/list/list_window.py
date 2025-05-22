@@ -1,34 +1,33 @@
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import (
-    QVBoxLayout, QHBoxLayout, QPushButton,
-    QScrollArea, QWidget, QLineEdit
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QScrollArea,
+    QVBoxLayout,
+    QWidget
 )
 from base_window import BaseWindow
 
-
 class ListWindow(BaseWindow):
-    def __init__(self, app):
-        self.app = app
-        super().__init__(app)  # Set up base UI (background, logo, buttons)
+    def initialize_ui(self) -> None:
+        super().initialize_ui()
 
-        # Add the two custom header buttons ('Clear', '?')
-        self.panel_layout.addLayout(self.setup_local_header_buttons())
-
-        # Add scrollable list and input area
-        self.panel_layout.addWidget(self.setup_list_ui())
-        self.panel_layout.addLayout(self.setup_input_ui())
-
-    def setup_local_header_buttons(self) -> QHBoxLayout:
-        header_layout = QHBoxLayout()
+        # Header UI for list-specific buttons below the base header
+        list_header_layout = QHBoxLayout()
         clear_button = QPushButton("Clear")
         help_button = QPushButton("?")
 
-        header_layout.addWidget(clear_button)
-        header_layout.addWidget(help_button)
-        return header_layout
+        list_header_layout.addWidget(clear_button)
+        list_header_layout.addWidget(help_button)
+        list_header_layout.addStretch()
 
-    def setup_list_ui(self) -> QScrollArea:
+        self.content_layout.addLayout(list_header_layout)
+
+        # List area - scrollable
         self.list_container = QVBoxLayout()
-
         list_widget = QWidget()
         list_widget.setLayout(self.list_container)
 
@@ -37,11 +36,10 @@ class ListWindow(BaseWindow):
         scroll_area.setWidget(list_widget)
         scroll_area.setFixedHeight(300)
 
-        return scroll_area
+        self.content_layout.addWidget(scroll_area)
 
-    def setup_input_ui(self) -> QHBoxLayout:
+        # Input area
         input_layout = QHBoxLayout()
-
         self.list_input = QLineEdit()
         self.list_input.setPlaceholderText("Add a new item...")
         self.list_input.returnPressed.connect(self.handle_add_todo)
@@ -52,8 +50,7 @@ class ListWindow(BaseWindow):
         input_layout.addWidget(self.list_input)
         input_layout.addWidget(submit_button)
 
-        return input_layout
+        self.content_layout.addLayout(input_layout)
 
-    def handle_add_todo(self):
-        # Placeholder for todo logic
-        pass
+    def handle_add_todo(self) -> None:
+        pass  # Your existing logic here
